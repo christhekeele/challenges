@@ -32,3 +32,5 @@ rm -rf christhekeele-challenges
   Parse a series of commands to drive a toy robot around.
 
   Project seed comes with a setup to develop your solution as an Elixir CLI, and even a TUI should you wish!
+
+  My solution [here](https://github.com/christhekeele/challenges/compare/toy-robot).
