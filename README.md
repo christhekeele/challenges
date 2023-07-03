@@ -16,7 +16,7 @@ There are two quick ways to get try these challenges:
 
    This has the advantage of letting you try all of them, follow any updates I make to the project, and compare your answer with others.
 
-   When you start a challenge, be sure to follow the convention of making your commits to an individual project in a branch named after the project!
+   When you start a challenge, be sure to follow the convention of making your commits to an individual challenge in a branch named after the challenge!
 
 2. Clean copies
 
@@ -24,7 +24,7 @@ There are two quick ways to get try these challenges:
    For example, to get the just the `toy-robot` challenge:
 
    ```sh
-   export CHALLENGE="toy-robot" # or whatever branch your solution lives in
+   export CHALLENGE="toy-robot" # or whatever challenge you want to attempt
 
    git clone --depth 1 --filter=blob:none --sparse https://github.com/christhekeele/challenges.git christhekeele-challenges
    cd christhekeele-challenges
@@ -45,21 +45,30 @@ If you want to show off your solution, submit a PR from your fork that adds a li
 A nice way to showcase your implementation is to generate a link to a github comparison. For example, if you have solved `toy-robot`:
 
 ```sh
-export REMOTE="origin"                     # or whatever you named your fork's remote
-export CHALLENGE="toy-robot"               # or whatever branch your solution lives in
-export GH_USERNAME="@your-github-username"
+export CHALLENGE="toy-robot"    # or whatever challenge you're working on
+export USERNAME="christhekeele" # your github username, omit the leading '@'
+# export REMOTE="origin"        # override if your fork's remote is not named 'origin'
+# export SOLUTION="my-robot"    # override the branch your solution lives in, if it is named differently
+
+export remote=${REMOTE:-origin}
+export branch=${SOLUTION:-$CHALLENGE}
+export solutions=$(git rev-parse --show-toplevel)/$CHALLENGE/SOLUTIONS.md
 
 # Ensure your fork is up-to-date
-git checkout $CHALLENGE && git push $REMOTE $CHALLENGE
+git checkout $branch && git push $remote $branch
 # Add your fork's upstream in a remote named "source"
 git remote add source https://github.com/christhekeele/challenges.git
 # Ensure source history is up-to-date
 git checkout latest && git pull
-# Find where your solution diverged from the project seed
-export LAST_COMMON_COMMIT=$(git merge-base --octopus latest $CHALLENGE)
+
+# Find where your solution diverged from updates to the project seed
+export last_common_commit=$(git merge-base --octopus latest $branch)
+# Generate a comparison link
+export github_comparison="https://github.com/christhekeele/challenges/compare/$last_common_commit...$USERNAME:$branch"
 # Add a link to your solution comparison in SOLUTIONS.md
-echo "- [$GH_USERNAME](https://github.com/christhekeele/challenges/compare/$LAST_COMMON_COMMIT...$GH_USERNAME:$CHALLENGE)" >> $(git rev-parse --show-toplevel)/$CHALLENGE/SOLUTIONS.md
-#
+echo "- [@$USERNAME]($github_comparison)" >> $solutions
+# Commit and push the link to your solution, and submit a PR!
+git commit -am "Share @$USERNAME's solution to the $CHALLENGE challenge." && git push -u $remote latest
 ```
 
 ## Index of Challenges
