@@ -77,8 +77,8 @@ defmodule ToyRobot.Simulation do
   defp right(simulation = %{facing: @dir_WEST}), do: %{simulation | facing: @dir_NORTH}
 
   # Do not advance off-grid
-  defp move(simulation = %{facing: @dir_NORTH, size: size, y: y}) when y == size - 1, do: simulation
-  defp move(simulation = %{facing: @dir_EAST, size: size, x: x}) when x == size - 1, do: simulation
+  defp move(simulation = %{facing: @dir_NORTH, size: size, y: y}) when y == size, do: simulation
+  defp move(simulation = %{facing: @dir_EAST, size: size, x: x}) when x == size, do: simulation
   defp move(simulation = %{facing: @dir_SOUTH, y: 0}), do: simulation
   defp move(simulation = %{facing: @dir_WEST, x: 0}), do: simulation
 
