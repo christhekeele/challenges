@@ -54,11 +54,7 @@ defmodule ToyRobot.Simulation do
   defp do_process(simulation, @cmd_PLACE <> " " <> xyf) do
     [x, y, facing | []] = String.split(xyf, ",")
     {{x, ""}, {y, ""}} = {Integer.parse(x), Integer.parse(y)}
-
-    case facing do
-      facing when facing in @directions ->
-        %{simulation | x: x, y: y, facing: facing}
-    end
+    place(simulation, {x, y, facing})
   end
 
   defp do_process(simulation, @cmd_MOVE), do: move(simulation)
@@ -76,9 +72,18 @@ defmodule ToyRobot.Simulation do
   defp right(simulation = %{facing: @dir_SOUTH}), do: %{simulation | facing: @dir_WEST}
   defp right(simulation = %{facing: @dir_WEST}), do: %{simulation | facing: @dir_NORTH}
 
+  defp place(simulation = %{size: size}, {x, y, facing})
+       when x >= 0 and x < size and y >= 0 and y < size and facing in @directions do
+    %{simulation | x: x, y: y, facing: facing}
+  end
+
   # Do not advance off-grid
-  defp move(simulation = %{facing: @dir_NORTH, size: size, y: y}) when y == size, do: simulation
-  defp move(simulation = %{facing: @dir_EAST, size: size, x: x}) when x == size, do: simulation
+  defp move(simulation = %{facing: @dir_NORTH, size: size, y: y}) when y == size - 1,
+    do: simulation
+
+  defp move(simulation = %{facing: @dir_EAST, size: size, x: x}) when x == size - 1,
+    do: simulation
+
   defp move(simulation = %{facing: @dir_SOUTH, y: 0}), do: simulation
   defp move(simulation = %{facing: @dir_WEST, x: 0}), do: simulation
 
